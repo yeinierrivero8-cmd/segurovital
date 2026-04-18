@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SeguroVital – Anisley G Rivero</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-serif { font-family: 'Playfair Display', serif; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-20px); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes rotateSlow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 20px 4px rgba(251,191,36,0.4), 0 0 60px 10px rgba(251,191,36,0.15); }
+      50%       { box-shadow: 0 0 40px 10px rgba(251,191,36,0.7), 0 0 80px 20px rgba(251,191,36,0.3); }
+    }
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50%       { transform: translateY(10px); opacity: 1; }
+    }
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes floatParticle {
+      0%         { transform: translateY(0) translateX(0) scale(1); opacity: 0.15; }
+      33%        { transform: translateY(-40px) translateX(15px) scale(1.2); opacity: 0.35; }
+      66%        { transform: translateY(-20px) translateX(-10px) scale(0.9); opacity: 0.2; }
+      100%       { transform: translateY(0) translateX(0) scale(1); opacity: 0.15; }
+    }
+    .animate-fadeInUp   { animation: fadeInUp 0.8s ease-out forwards; }
+    .animate-float      { animation: float 6s ease-in-out infinite; }
+    .text-shimmer {
+      background: linear-gradient(90deg, #fbbf24 20%, #fff7cc 40%, #f59e0b 55%, #fbbf24 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+    .ring-rotate {
+      animation: rotateSlow 18s linear infinite;
+      transform-origin: center;
+    }
+    .photo-glow {
+      animation: glowPulse 2.8s ease-in-out infinite;
+    }
+    .scroll-indicator {
+      animation: bounceDown 1.6s ease-in-out infinite;
+    }
+    @keyframes kenBurns {
+      0%   { transform: scale(1)    translateX(0px)   translateY(0px); }
+      33%  { transform: scale(1.07) translateX(-8px)  translateY(-4px); }
+      66%  { transform: scale(1.04) translateX(6px)   translateY(-6px); }
+      100% { transform: scale(1)    translateX(0px)   translateY(0px); }
+    }
+    @keyframes shimmerOverlay {
+      0%   { opacity: 0.55; }
+      50%  { opacity: 0.45; }
+      100% { opacity: 0.55; }
+    }
+    .hero-bg-animated {
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg-img {
+      position: absolute;
+      inset: -5%;
+      width: 110%;
+      height: 110%;
+      background-image: url('mejor-seguro-de-vida.jpeg');
+      background-size: cover;
+      background-position: center 40%;
+      animation: kenBurns 18s ease-in-out infinite;
+      will-change: transform;
+    }
+    .hero-bg-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10,20,60,0.82) 0%, rgba(15,40,100,0.70) 40%, rgba(10,15,50,0.80) 100%);
+      animation: shimmerOverlay 6s ease-in-out infinite;
+    }
+    .hero-bg-overlay2 {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.35) 0%, transparent 60%);
+    }
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 5px; }
+    ::-webkit-scrollbar-thumb:hover { background: #b45309; }
+  </style>
+</head>
+<body class="bg-white text-slate-900">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    // ─── ICONOS SVG INLINE ────────────────────────────────────────────────────
+    const Icon = ({ d, className, fill = "none", strokeWidth = 2 }) => (
+      <svg className={className} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round">
+        {Array.isArray(d) ? d.map((p, i) => <path key={i} d={p} />) : <path d={d} />}
+      </svg>
+    );
+
+    const HeartIcon    = ({ className }) => <Icon className={className} fill="currentColor" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />;
+    const UsersIcon    = ({ className }) => <Icon className={className} d={["M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2","M23 21v-2a4 4 0 0 0-3-3.87","M16 3.13a4 4 0 0 1 0 7.75","M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"]} />;
+    const Building2Icon= ({ className }) => <Icon className={className} d={["M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z","M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2","M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2","M10 6h4","M10 10h4","M10 14h4","M10 18h4"]} />;
+    const ShieldIcon   = ({ className }) => <Icon className={className} d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />;
+    const PhoneIcon    = ({ className }) => <Icon className={className} d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.42 2 2 0 0 1 3.57 1.27h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.9-.9a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />;
+    const MailIcon     = ({ className }) => <Icon className={className} d={["M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z","M22 6l-10 7L2 6"]} />;
+    const MapPinIcon   = ({ className }) => <Icon className={className} d={["M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z","M12 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"]} fill="currentColor" />;
+    const XIcon        = ({ className }) => <Icon className={className} d={["M18 6 6 18","M6 6l12 12"]} />;
+    const ArrowRightIcon=({ className }) => <Icon className={className} d={["M5 12h14","M12 5l7 7-7 7"]} />;
+    const CheckIcon    = ({ className }) => <Icon className={className} d="M20 6 9 17l-5-5" />;
+    const ImagesIcon   = ({ className }) => <Icon className={className} d={["M18 22H4a2 2 0 0 1-2-2V6l4-4h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2z","M14 2v4a2 2 0 0 0 2 2h4","M8 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z","M20 17l-1.09-1.09a2 2 0 0 0-2.82 0L10 22"]} />;
+    const CalculatorIcon = ({ className }) => <Icon className={className} d={["M4 2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z","M8 6h8","M8 10h2","M12 10h2","M16 10h0","M8 14h2","M12 14h2","M16 14h2","M8 18h2","M12 18h2","M16 18h2"]} />;
+    const StarIcon = ({ className }) => <Icon className={className} fill="currentColor" strokeWidth={1} d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />;
+
+    // ─── TRADUCCIONES ─────────────────────────────────────────────────────────
+    const translations = {
+      es: {
+        navServices: 'Servicios', navAbout: 'Sobre mí', navContact: 'Contactar',
+        heroSpan: 'AGENTE LICENCIADA · FLORIDA & TEXAS',
+        heroTitle: 'Tu salud merece', heroTitleHighlight: 'el mejor plan', heroTitleEnd: '',
+        heroDesc: 'Soy Anisley G Rivero, agente licenciada en Florida y Texas. Me especializo en Obamacare (ACA) para conseguirte la mayor cobertura médica con los máximos subsidios disponibles. Sin complicaciones, sin costo para ti.',
+        freConsultation: 'Consulta Gratuita', learnMore: 'Conocer más',
+        aboutSpan: 'SOBRE MÍ', aboutTitle: 'Entiendo tus necesidades',
+        aboutDesc: 'Entiendo las necesidades de nuestra comunidad hispana. Por eso, mi prioridad es explicarte cada opción con claridad, sin letra pequeña ni sorpresas, para que tomes la mejor decisión con total confianza.',
+        floridaLicense: 'Agente Licenciada en Florida', texasLicense: 'Agente Licenciada en Texas',
+        servicesSpan: 'MIS SERVICIOS', servicesTitle: 'Planes para ', servicesHighlight: 'cada etapa', servicesEnd: ' de tu vida',
+        service1Title: 'Seguro de Vida',
+        service1Desc: 'Protege el futuro económico de tu familia. Pólizas de término (Term Life) y vida entera (Whole Life) con las mejores tarifas.',
+        service1CTA: 'COTIZAR AHORA',
+        service2Title: 'Obamacare',
+        service2Desc: 'Planes del Mercado de Salud (ACA): cobertura completa con subsidios disponibles según tus ingresos. Visitas al médico, hospitalización, medicamentos y más.',
+        service2CTA: 'VER PLANES',
+        service3Title: 'Medicare',
+        service3Desc: 'Si tienes 65 años o más, te ayudo a navegar Medicare: Parte A, B, C y D, así como planes Medigap.',
+        service3CTA: 'MÁS INFORMACIÓN',
+        service4Title: 'Seguros Familiares',
+        service4Desc: 'Planes que protegen a toda tu familia bajo una sola cobertura. Analizo tu situación para la mejor opción.',
+        service4CTA: 'CONSULTAR',
+        service5Title: 'Taxes Personales y Corporativos',
+        service5Desc: 'Preparación de declaraciones de impuestos personales y comerciales. Maximiza tu reembolso, cumple con el IRS y evita multas. Servicio rápido, confiable y en español.',
+        service5CTA: 'CONSULTAR',
+        coverageSpan: 'ÁREA DE COBERTURA', coverageTitle: 'Disponible en dos estados',
+        coverageDesc: 'Cuento con licencia activa para operar en Florida y Texas, dos de los estados con mayor crecimiento de la comunidad hispana.',
+        stateComplete: 'ESTADO COMPLETO',
+        reviewsSpan: 'OPINIONES DE CLIENTES', reviewsTitle: 'Lo que dicen ', reviewsHighlight: 'mis clientes',
+        whySpan: '¿POR QUÉ ELEGIRME?', whyTitle: 'El servicio que ', whyHighlight: 'mereces',
+        whyDesc: 'No soy solo tu agente — soy tu aliada. Te acompaño durante todo el proceso, desde la cotización hasta el momento en que necesites usar tu póliza.',
+        benefit1: '100% en Español', benefit1Desc: 'Comunicación clara y sin barreras idiomáticas',
+        benefit2: 'Sin Presión',    benefit2Desc: 'Te educo para que tomes la mejor decisión',
+        benefit3: 'Respuesta Rápida',benefit3Desc: 'Respondo tus preguntas el mismo día',
+        benefit4: 'Acompañamiento', benefit4Desc: 'Estoy contigo mucho después de la firma',
+        contactSpan: 'CONTÁCTAME', contactTitle: 'Hablemos hoy mismo',
+        contactDesc: '¿Listo para proteger a tu familia? Déjame un mensaje o llámame directamente. La primera consulta es completamente gratuita.',
+        phonLabel: 'TELÉFONO / WHATSAPP', emailLabel: 'CORREO ELECTRÓNICO', areaLabel: 'ÁREA DE SERVICIO',
+        formTitle: 'Solicita tu consulta gratis',
+        formName: 'Nombre completo', formNamePlaceholder: 'Tu nombre',
+        formPhone: 'Teléfono', formPhonePlaceholder: '(XXX) XXX-XXXX',
+        formEmail: 'Correo electrónico', formEmailPlaceholder: 'tu@correo.com',
+        formType: '¿Qué tipo de seguro te interesa?', formSelect: 'Seleccionar opción',
+        formVida: 'Seguro de Vida', formMedico: 'Obamacare', formMedicare: 'Medicare', formFamiliar: 'Seguros Familiares',
+        formMessage: 'Mensaje (opcional)', formMessagePlaceholder: 'Cuéntame un poco sobre lo que necesitas...',
+        formSubmit: 'Enviar solicitud', formSending: 'Enviando...', formSuccess: '¡Mensaje enviado! Te contactaré pronto.', formError: 'Error al enviar. Llámame directamente al 786-393-1906.',
+        footerCompany: 'SeguroVital', footerRole: 'Agente Licenciada de Seguros · Florida & Texas',
+        footerDisclaimer: '© 2026 · Todos los derechos reservados · Diseñado para proteger lo que más amas',
+        contactModalTitle: 'Elige cómo contactarme', contactModalEmail: 'Enviar Email', contactModalPhone: 'Llamar o WhatsApp', contactModalClose: 'Cerrar',
+        teamSpan: 'CONOCE A TU AGENTE', teamTitle: 'Anisley G Rivero', teamRole: 'Agente Licenciada Asesora de Seguros',
+        teamDesc: 'Especializada en ayudar a individuos y familias a encontrar la cobertura ideal. Ofrezco asesoría personalizada, opciones accesibles y acompañamiento continuo para proteger tu salud y tu futuro financiero.',
+        teamSpecialties: 'Especialidades',
+        teamObamacare: 'Obamacare (ACA)', teamLife: 'Seguro de Vida', teamMedicare: 'Medicare', teamFamily: 'Seguros Familiares',
+        galleryTitle: 'Galería de fotos', galleryClose: 'Cerrar',
+        agentCaption: 'Agente especializada en tu comunidad',
+      },
+      en: {
+        navServices: 'Services', navAbout: 'About', navContact: 'Contact',
+        heroSpan: 'LICENSED AGENT · FLORIDA & TEXAS',
+        heroTitle: 'Your health deserves', heroTitleHighlight: 'the best plan', heroTitleEnd: '',
+        heroDesc: "I'm Anisley G Rivero, licensed agent in Florida and Texas. I specialize in Obamacare (ACA) to get you the best medical coverage with maximum available subsidies. No complications, no cost to you.",
+        freConsultation: 'Free Consultation', learnMore: 'Learn More',
+        aboutSpan: 'ABOUT ME', aboutTitle: 'I understand your needs',
+        aboutDesc: "I understand the needs of our Hispanic community. That's why my priority is to explain each option clearly, without fine print or surprises, so you can make the best decision with complete confidence.",
+        floridaLicense: 'Licensed Agent in Florida', texasLicense: 'Licensed Agent in Texas',
+        servicesSpan: 'MY SERVICES', servicesTitle: 'Plans for ', servicesHighlight: 'every stage', servicesEnd: ' of your life',
+        service1Title: 'Life Insurance',
+        service1Desc: "Protect your family's financial future. Term Life and Whole Life policies at the best market rates.",
+        service1CTA: 'GET QUOTE',
+        service2Title: 'Obamacare',
+        service2Desc: 'Health Marketplace plans (ACA): complete coverage with subsidies available based on your income. Doctor visits, hospitalization, medications and more.',
+        service2CTA: 'VIEW PLANS',
+        service3Title: 'Medicare',
+        service3Desc: "If you're 65 or older, I help you navigate Medicare: Parts A, B, C and D, as well as Medigap plans.",
+        service3CTA: 'MORE INFO',
+        service4Title: 'Family Insurance',
+        service4Desc: 'Plans that protect your entire family under a single policy. I analyze your situation for the best option.',
+        service4CTA: 'CONSULT',
+        service5Title: 'Personal & Corporate Taxes',
+        service5Desc: 'Preparation of personal and business tax returns. Maximize your refund, stay compliant with the IRS, and avoid penalties. Fast, reliable service in Spanish.',
+        service5CTA: 'CONSULT',
+        coverageSpan: 'COVERAGE AREA', coverageTitle: 'Available in two states',
+        coverageDesc: 'I have an active license to operate in Florida and Texas, two of the states with the highest growth of the Hispanic community.',
+        stateComplete: 'ENTIRE STATE',
+        reviewsSpan: 'CLIENT REVIEWS', reviewsTitle: 'What my ', reviewsHighlight: 'clients say',
+        whySpan: 'WHY CHOOSE ME?', whyTitle: 'The service you ', whyHighlight: 'deserve',
+        whyDesc: "I'm not just your agent — I'm your ally. I'll be with you throughout the process, from the quote to the moment you need to use your policy.",
+        benefit1: '100% in Spanish', benefit1Desc: 'Clear communication without language barriers',
+        benefit2: 'No Pressure',    benefit2Desc: 'I educate you to make the best decision',
+        benefit3: 'Quick Response', benefit3Desc: 'I answer your questions the same day',
+        benefit4: 'Support',        benefit4Desc: "I'm with you long after signing",
+        contactSpan: 'CONTACT ME', contactTitle: "Let's talk today",
+        contactDesc: 'Ready to protect your family? Send me a message or call me directly. Your first consultation is completely free.',
+        phonLabel: 'PHONE / WHATSAPP', emailLabel: 'EMAIL ADDRESS', areaLabel: 'SERVICE AREA',
+        formTitle: 'Request your free consultation',
+        formName: 'Full name', formNamePlaceholder: 'Your name',
+        formPhone: 'Phone', formPhonePlaceholder: '(XXX) XXX-XXXX',
+        formEmail: 'Email address', formEmailPlaceholder: 'your@email.com',
+        formType: 'What type of insurance interests you?', formSelect: 'Select an option',
+        formVida: 'Life Insurance', formMedico: 'Obamacare', formMedicare: 'Medicare', formFamiliar: 'Family Insurance',
+        formMessage: 'Message (optional)', formMessagePlaceholder: 'Tell me a little about what you need...',
+        formSubmit: 'Send request', formSending: 'Sending...', formSuccess: 'Message sent! I will contact you soon.', formError: 'Error sending. Call me directly at 786-393-1906.',
+        footerCompany: 'SeguroVital', footerRole: 'Licensed Insurance Agent · Florida & Texas',
+        footerDisclaimer: '© 2026 · All rights reserved · Designed to protect what you love most',
+        contactModalTitle: 'Choose how to contact me', contactModalEmail: 'Send Email', contactModalPhone: 'Call or WhatsApp', contactModalClose: 'Close',
+        teamSpan: 'MEET YOUR AGENT', teamTitle: 'Anisley G Rivero', teamRole: 'Licensed Insurance Advisor Agent',
+        teamDesc: 'Specialized in helping individuals and families find the ideal coverage. I offer personalized advice, accessible options and continuous support to protect your health and financial future.',
+        teamSpecialties: 'Specialties',
+        teamObamacare: 'Obamacare (ACA)', teamLife: 'Life Insurance', teamMedicare: 'Medicare', teamFamily: 'Family Insurance',
+        galleryTitle: 'Photo Gallery', galleryClose: 'Close',
+        agentCaption: 'Agent specialized in your community',
+      }
+    };
+
+    // ─── FOTOS DE LA AGENTE ───────────────────────────────────────────────────
+    // Foto principal de perfil (sección "Conoce a tu agente")
+    const profilePhoto = 'fotos/perfil.jpg';
+
+    // Galería del botón "Conocer más" — agrega más fotos aquí:
+    const agentPhotos = [
+      { src: 'fotos/perfil.jpg', alt: 'Anisley G Rivero' },
+      { src: 'fotos/foto1.jpg',  alt: 'Anisley G Rivero' },
+      // { src: './fotos/foto3.jpg', alt: 'Anisley G Rivero' },
+    ];
+
+    // ─── EMAILJS CONFIG ───────────────────────────────────────────────────────
+    // INSTRUCCIONES:
+    // 1. Ve a https://www.emailjs.com y crea cuenta gratis
+    // 2. Conecta tu Gmail → "Email Services" → "Add New Service"
+    // 3. Crea una plantilla → "Email Templates" → "Create New Template"
+    //    En el template pon: From: {{from_name}} | Phone: {{phone}} | Email: {{from_email}} | Type: {{insurance_type}} | Message: {{message}}
+    // 4. Ve a "Account" → copia tu Public Key
+    // 5. Reemplaza los 3 valores de abajo:
+    const EMAILJS_SERVICE_ID  = 'TU_SERVICE_ID';   // ej: service_abc123
+    const EMAILJS_TEMPLATE_ID = 'TU_TEMPLATE_ID';  // ej: template_xyz789
+    const EMAILJS_PUBLIC_KEY  = 'TU_PUBLIC_KEY';   // ej: abcDEF123
+
+    // ─── CONTADOR ANIMADO ─────────────────────────────────────────────────────
+    function StatCounter({ end, suffix, label, delay = 0 }) {
+      const [count, setCount] = React.useState(0);
+      React.useEffect(() => {
+        const t = setTimeout(() => {
+          const duration = 1800;
+          const start = performance.now();
+          function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.floor(eased * end));
+            if (progress < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        }, delay);
+        return () => clearTimeout(t);
+      }, [end, delay]);
+      return (
+        <div className="text-center">
+          <p className="text-3xl md:text-4xl font-serif font-bold text-amber-400">{count}{suffix}</p>
+          <p className="text-sm text-blue-200 mt-1">{label}</p>
+        </div>
+      );
+    }
+
+    // ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────
+    function SeguroVital() {
+      const [isScrolled,       setIsScrolled]       = React.useState(false);
+      const [visibleSections,  setVisibleSections]  = React.useState({});
+      const [language,         setLanguage]         = React.useState('es');
+      const [showContactModal, setShowContactModal] = React.useState(false);
+      const [showGallery,      setShowGallery]      = React.useState(false);
+      const [galleryIndex,     setGalleryIndex]     = React.useState(0);
+      const [formData,         setFormData]         = React.useState({ name:'', phone:'', email:'', type:'', message:'' });
+      const [formStatus,       setFormStatus]       = React.useState('idle'); // idle | sending | success | error
+
+      const t = translations[language];
+
+      // Scroll listener
+      React.useEffect(() => {
+        const handleScroll = () => setIsScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
+
+      // IntersectionObserver para animaciones
+      React.useEffect(() => {
+        const observers = [];
+        ['about','services','coverage','why-choose','team','contact'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const obs = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting)
+              setVisibleSections(prev => ({ ...prev, [id]: true }));
+          }, { threshold: 0.1 });
+          obs.observe(el);
+          observers.push(obs);
+        });
+        return () => observers.forEach(o => o.disconnect());
+      }, []);
+
+      // Envío del formulario por EmailJS
+      const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!formData.name || !formData.phone) return;
+        setFormStatus('sending');
+        try {
+          await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            {
+              from_name:      formData.name,
+              from_email:     formData.email || 'No indicado',
+              phone:          formData.phone,
+              insurance_type: formData.type  || 'No indicado',
+              message:        formData.message || 'Sin mensaje adicional',
+              to_email:       'anisley.grivero@gmail.com',
+            },
+            EMAILJS_PUBLIC_KEY
+          );
+          setFormStatus('success');
+          setFormData({ name:'', phone:'', email:'', type:'', message:'' });
+        } catch {
+          setFormStatus('error');
+        }
+      };
+
+      const handleFormChange = (e) =>
+        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+
+      // Servicios
+      const services = [
+        { icon: <HeartIcon className="w-12 h-12 text-red-500" />,      title: t.service1Title, description: t.service1Desc, cta: t.service1CTA },
+        { icon: <Building2Icon className="w-12 h-12 text-amber-500" />, title: t.service2Title, description: t.service2Desc, cta: t.service2CTA },
+        { icon: <UsersIcon className="w-12 h-12 text-amber-500" />,       title: t.service4Title, description: t.service4Desc, cta: t.service4CTA },
+        { icon: <CalculatorIcon className="w-12 h-12 text-amber-500" />, title: t.service5Title, description: t.service5Desc, cta: t.service5CTA },
+      ];
+
+      const benefits = [
+        { icon: "🗣️", title: t.benefit1, description: t.benefit1Desc },
+        { icon: "💡", title: t.benefit2, description: t.benefit2Desc },
+        { icon: "⚡", title: t.benefit3, description: t.benefit3Desc },
+        { icon: "🤝", title: t.benefit4, description: t.benefit4Desc },
+      ];
+
+      const vis = (id) => visibleSections[id]
+        ? 'opacity-100 translate-y-0'
+        : 'opacity-0 translate-y-10';
+
+      return (
+        <div className="min-h-screen bg-white text-slate-900">
+
+          {/* ── NAVEGACIÓN ── */}
+          <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-lg' : 'bg-transparent'}`}>
+            <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+              <div className={`font-serif text-2xl font-bold transition-colors ${isScrolled ? 'text-slate-900' : 'text-white'}`}>SeguroVital</div>
+              <div className="hidden md:flex items-center gap-6">
+                <a href="#services" className={`font-medium text-sm transition-colors hover:text-amber-500 ${isScrolled ? 'text-slate-600' : 'text-white/80'}`}>{t.navServices}</a>
+                <a href="#about"    className={`font-medium text-sm transition-colors hover:text-amber-500 ${isScrolled ? 'text-slate-600' : 'text-white/80'}`}>{t.navAbout}</a>
+                <a href="#team"     className={`font-medium text-sm transition-colors hover:text-amber-500 ${isScrolled ? 'text-slate-600' : 'text-white/80'}`}>{language==='es' ? 'Tu Agente' : 'Your Agent'}</a>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className={`flex rounded-lg p-1 transition-colors ${isScrolled ? 'bg-slate-100' : 'bg-white/15 backdrop-blur-sm'}`}>
+                  <button onClick={() => setLanguage('es')} className={`px-3 py-1.5 rounded text-sm font-semibold transition-all ${language==='es' ? 'bg-amber-500 text-white' : isScrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'}`}>ES</button>
+                  <button onClick={() => setLanguage('en')} className={`px-3 py-1.5 rounded text-sm font-semibold transition-all ${language==='en' ? 'bg-amber-500 text-white' : isScrolled ? 'text-slate-600 hover:text-slate-900' : 'text-white/80 hover:text-white'}`}>EN</button>
+                </div>
+                <button onClick={() => setShowContactModal(true)} className="px-5 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors text-sm font-semibold shadow-sm">
+                  {t.navContact}
+                </button>
+              </div>
+            </div>
+          </nav>
+
+          {/* ── HERO ── */}
+          <section className="relative min-h-screen flex items-center overflow-hidden">
+
+            {/* Fondo imagen animada */}
+            <div className="absolute inset-0 hero-bg-animated">
+              <div className="hero-bg-img"></div>
+              <div className="hero-bg-overlay"></div>
+              <div className="hero-bg-overlay2"></div>
+            </div>
+
+            {/* Partículas flotantes */}
+            {[
+              { top:'15%', left:'8%',  size:6,  delay:'0s',   dur:'7s'  },
+              { top:'70%', left:'5%',  size:4,  delay:'1.2s', dur:'9s'  },
+              { top:'30%', left:'90%', size:8,  delay:'0.5s', dur:'8s'  },
+              { top:'80%', left:'85%', size:5,  delay:'2s',   dur:'11s' },
+              { top:'50%', left:'50%', size:3,  delay:'3s',   dur:'6s'  },
+              { top:'10%', left:'55%', size:7,  delay:'1.8s', dur:'10s' },
+              { top:'60%', left:'30%', size:4,  delay:'0.9s', dur:'8.5s'},
+              { top:'25%', left:'75%', size:5,  delay:'2.5s', dur:'7.5s'},
+            ].map((p, i) => (
+              <div key={i} className="absolute rounded-full bg-white pointer-events-none"
+                style={{ top:p.top, left:p.left, width:p.size, height:p.size,
+                  animation:`floatParticle ${p.dur} ease-in-out ${p.delay} infinite` }} />
+            ))}
+
+            {/* Patrón de cruces médicas */}
+            <div className="absolute inset-0 opacity-5 pointer-events-none">
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="medCross" x="0" y="0" width="70" height="70" patternUnits="userSpaceOnUse">
+                    <rect x="30" y="18" width="10" height="34" fill="white"/>
+                    <rect x="18" y="30" width="34" height="10" fill="white"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#medCross)"/>
+              </svg>
+            </div>
+
+            {/* Círculos decorativos de luz */}
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/20 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl translate-y-1/3 -translate-x-1/4 pointer-events-none"></div>
+            <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+            {/* Contenido principal */}
+            <div className="relative z-10 max-w-6xl mx-auto px-6 py-32 w-full">
+              <div className="grid md:grid-cols-2 gap-16 items-center">
+
+                {/* ── Izquierda: texto ── */}
+                <div className="space-y-8 text-white">
+
+                  {/* Badge superior */}
+                  <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2.5 animate-fadeInUp" style={{opacity:0, animationDelay:'0.1s', animationFillMode:'forwards'}}>
+                    <ShieldIcon className="w-4 h-4 text-amber-400" />
+                    <span className="text-amber-300 font-semibold text-xs tracking-widest uppercase">{t.heroSpan}</span>
+                  </div>
+
+                  {/* Título */}
+                  <h1 className="text-5xl md:text-6xl font-serif font-bold leading-tight animate-fadeInUp" style={{opacity:0, animationDelay:'0.3s', animationFillMode:'forwards'}}>
+                    {t.heroTitle}
+                    <span className="text-shimmer block mt-1">{t.heroTitleHighlight}</span>
+                  </h1>
+
+                  {/* Descripción */}
+                  <p className="text-lg text-blue-100/90 leading-relaxed max-w-lg animate-fadeInUp" style={{opacity:0, animationDelay:'0.55s', animationFillMode:'forwards'}}>{t.heroDesc}</p>
+
+                  {/* Badges de confianza */}
+                  <div className="flex flex-wrap gap-3 animate-fadeInUp" style={{opacity:0, animationDelay:'0.75s', animationFillMode:'forwards'}}>
+                    <span className="flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                      <CheckIcon className="w-4 h-4 text-green-400 flex-shrink-0" /> {t.floridaLicense}
+                    </span>
+                    <span className="flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                      <CheckIcon className="w-4 h-4 text-green-400 flex-shrink-0" /> {t.texasLicense}
+                    </span>
+                    <span className="flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm">
+                      <CheckIcon className="w-4 h-4 text-green-400 flex-shrink-0" /> 100% {language==='es' ? 'Español' : 'Spanish'}
+                    </span>
+                  </div>
+
+                  {/* Botones CTA */}
+                  <div className="flex gap-4 pt-2 flex-wrap animate-fadeInUp" style={{opacity:0, animationDelay:'0.95s', animationFillMode:'forwards'}}>
+                    <a href="#contact"
+                      className="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 hover:shadow-amber-400/50 hover:-translate-y-0.5 transition-all duration-300">
+                      {t.freConsultation}
+                    </a>
+                    <button
+                      onClick={() => { setGalleryIndex(0); setShowGallery(true); }}
+                      className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl transition-all duration-300 flex items-center gap-2">
+                      {t.learnMore} <ImagesIcon className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* ── Derecha: foto de la agente ── */}
+                <div className="relative flex justify-center items-center mt-12 md:mt-0 animate-fadeInUp" style={{opacity:0, animationDelay:'0.4s', animationFillMode:'forwards'}}>
+
+                  {/* Anillos decorativos */}
+                  <div className="absolute w-72 h-72 md:w-96 md:h-96 rounded-full border border-white/10 animate-pulse"></div>
+                  <div className="absolute w-64 h-64 md:w-80 md:h-80 rounded-full border-2 border-dashed border-amber-400/30 ring-rotate"></div>
+                  <div className="absolute w-80 h-80 md:w-[420px] md:h-[420px] rounded-full border border-blue-400/15" style={{animation:'rotateSlow 30s linear reverse infinite'}}></div>
+
+                  {/* Foto circular con borde dorado + glow */}
+                  <div className="relative z-10 w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-[5px] border-amber-400 photo-glow">
+                    <img
+                      src="fotos/perfil.jpg"
+                      alt="Anisley G Rivero"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+
+                  {/* Tarjeta flotante – Consulta gratis */}
+                  <div className="absolute top-2 -right-2 md:right-0 bg-white rounded-2xl px-4 py-3 shadow-2xl z-20 animate-float">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <CheckIcon className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-medium">{language==='es' ? 'Primera consulta' : 'First consult'}</p>
+                        <p className="text-sm font-bold text-green-600">100% {language==='es' ? 'Gratis' : 'Free'}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Tarjeta flotante – Cobertura */}
+                  <div className="absolute bottom-2 -left-2 md:left-0 bg-white rounded-2xl px-4 py-3 shadow-2xl z-20" style={{animation:'float 6s ease-in-out 1.5s infinite'}}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <MapPinIcon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 font-medium">{language==='es' ? 'Disponible en' : 'Available in'}</p>
+                        <p className="text-sm font-bold text-blue-700">Florida & Texas</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Barra de estadísticas ── */}
+              <div className="mt-20 pt-8 border-t border-white/15 grid grid-cols-3 gap-4 animate-fadeInUp" style={{opacity:0, animationDelay:'1.2s', animationFillMode:'forwards'}}>
+                {[
+                  { end: 500, suffix:'+', label: language==='es' ? 'Familias protegidas'  : 'Families protected' },
+                  { end: 2,   suffix:'',  label: language==='es' ? 'Estados con licencia' : 'Licensed states'    },
+                  { end: 100, suffix:'%', label: language==='es' ? 'Atención en español'  : 'Service in Spanish' },
+                ].map((s, i) => (
+                  <StatCounter key={i} end={s.end} suffix={s.suffix} label={s.label} delay={1400 + i*200} />
+                ))}
+              </div>
+
+              {/* ── Indicador scroll ── */}
+              <div className="flex justify-center mt-10">
+                <a href="#about" className="scroll-indicator flex flex-col items-center gap-1 text-white/40 hover:text-white/70 transition-colors">
+                  <span className="text-xs tracking-widest uppercase">{language==='es' ? 'Ver más' : 'Scroll'}</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M12 5v14M5 12l7 7 7-7" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </section>
+
+          {/* ── SOBRE MÍ ── */}
+          <section id="about" className="py-20 px-6 bg-slate-50">
+            <div className="max-w-6xl mx-auto">
+              <div className={`space-y-8 transition-all duration-1000 ${vis('about')}`}>
+                <div className="max-w-2xl">
+                  <span className="text-amber-500 font-semibold text-sm tracking-widest">{t.aboutSpan}</span>
+                  <h2 className="text-4xl font-serif font-bold text-slate-900 mt-4">{t.aboutTitle}</h2>
+                </div>
+                <p className="text-lg text-slate-600 leading-relaxed max-w-3xl">{t.aboutDesc}</p>
+                <div className="mt-8 rounded-2xl overflow-hidden shadow-lg max-w-2xl">
+                  <video controls className="w-full" poster="">
+                    <source src="video.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div className="grid md:grid-cols-2 gap-6 mt-12">
+                  {[t.floridaLicense, t.texasLicense].map((lic, i) => (
+                    <div key={i} className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow">
+                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-amber-100 flex-shrink-0">
+                        <CheckIcon className="w-6 h-6 text-amber-600" />
+                      </div>
+                      <h3 className="font-semibold text-slate-900">{lic}</h3>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── SERVICIOS ── */}
+          <section id="services" className="py-20 px-6">
+            <div className="max-w-6xl mx-auto">
+              <div className={`mb-16 transition-all duration-1000 ${vis('services')}`}>
+                <span className="text-amber-500 font-semibold text-sm tracking-widest">{t.servicesSpan}</span>
+                <h2 className="text-4xl font-serif font-bold text-slate-900 mt-4">
+                  {t.servicesTitle}<span className="text-amber-500">{t.servicesHighlight}</span>{t.servicesEnd}
+                </h2>
+              </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                {services.map((s, i) => (
+                  <div key={i}
+                    className={`group p-8 rounded-2xl border border-slate-200 hover:border-amber-500 bg-white hover:shadow-xl transition-all duration-500 ${vis('services')}`}
+                    style={{ transitionDelay: visibleSections.services ? `${i*100}ms` : '0ms' }}
+                  >
+                    <div className="mb-6">{s.icon}</div>
+                    <h3 className="text-2xl font-serif font-bold text-slate-900 mb-4">{s.title}</h3>
+                    <p className="text-slate-600 leading-relaxed mb-6">{s.description}</p>
+                    <button
+                      onClick={() => setShowContactModal(true)}
+                      className="text-amber-500 font-semibold hover:text-amber-600 flex items-center gap-2 group"
+                    >
+                      {s.cta} <ArrowRightIcon className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── COBERTURA ── */}
+          <section id="coverage" className="py-20 px-6 bg-gradient-to-br from-slate-50 to-slate-100">
+            <div className="max-w-6xl mx-auto">
+              <div className={`text-center mb-16 transition-all duration-1000 ${vis('coverage')}`}>
+                <span className="text-amber-500 font-semibold text-sm tracking-widest">{t.coverageSpan}</span>
+                <h2 className="text-4xl font-serif font-bold text-slate-900 mt-4">{t.coverageTitle}</h2>
+                <p className="text-slate-600 mt-4 max-w-2xl mx-auto">{t.coverageDesc}</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-12">
+                {[
+                  {
+                    name: 'Florida',
+                    city: 'Miami, FL',
+                    img: 'https://images.unsplash.com/photo-1533106497176-45ae19e68ba2?w=800&h=400&fit=crop&crop=center'
+                  },
+                  {
+                    name: 'Texas',
+                    city: 'Houston, TX',
+                    img: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=800&h=400&fit=crop&crop=center'
+                  }
+                ].map((s, i) => (
+                  <div key={i}
+                    className={`bg-white rounded-2xl shadow-md overflow-hidden transition-all duration-1000 hover:shadow-xl hover:-translate-y-2 ${vis('coverage')}`}
+                    style={{ transitionDelay: visibleSections.coverage ? `${i*150}ms` : '0ms' }}
+                  >
+                    <div className="relative h-52 overflow-hidden">
+                      <img
+                        src={s.img}
+                        alt={s.city}
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                      <p className="absolute bottom-3 left-4 text-white font-semibold text-sm drop-shadow">{s.city}</p>
+                    </div>
+                    <div className="py-8 text-center">
+                      <h3 className="text-3xl font-serif font-bold text-slate-900 mb-2">{s.name}</h3>
+                      <p className="text-amber-500 font-semibold text-sm">{t.stateComplete}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── RESEÑAS DE CLIENTES ── */}
+          <section id="reviews" className="py-20 px-6 bg-gradient-to-br from-slate-50 to-blue-50">
+            <div className="max-w-6xl mx-auto">
+
+              {/* Encabezado */}
+              <div className="text-center mb-16">
+                <span className="text-amber-500 font-semibold text-sm tracking-widest">{t.reviewsSpan}</span>
+                <h2 className="text-4xl font-serif font-bold text-slate-900 mt-4">
+                  {t.reviewsTitle}<span className="text-amber-500">{t.reviewsHighlight}</span>
+                </h2>
+                {/* Resumen de estrellas */}
+                <div className="flex items-center justify-center gap-2 mt-6">
+                  {[1,2,3,4,5].map(i => <StarIcon key={i} className="w-7 h-7 text-amber-400" />)}
+                  <span className="ml-2 text-2xl font-bold text-slate-900">5.0</span>
+                  <span className="text-slate-500 text-sm ml-1">({language==='es' ? '100% satisfacción' : '100% satisfaction'})</span>
+                </div>
+              </div>
+
+              {/* Tarjetas de reseñas */}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  {
+                    name: 'María González',
+                    location: 'Miami, FL',
+                    service: language==='es' ? 'Obamacare' : 'Obamacare',
+                    avatar: 'MG',
+                    color: 'bg-pink-500',
+                    text: language==='es'
+                      ? 'Anisley me ayudó a encontrar el plan de salud perfecto para mí y mis dos hijos. Conseguí un subsidio increíble y ahora tengo cobertura completa. ¡La recomiendo 100%!'
+                      : 'Anisley helped me find the perfect health plan for me and my two children. I got an incredible subsidy and now have full coverage. I recommend her 100%!'
+                  },
+                  {
+                    name: 'Carlos Rodríguez',
+                    location: 'Houston, TX',
+                    service: language==='es' ? 'Seguro de Vida' : 'Life Insurance',
+                    avatar: 'CR',
+                    color: 'bg-blue-500',
+                    text: language==='es'
+                      ? 'Profesional, honesta y muy paciente. Me explicó todo sin presiones y encontré la póliza que necesitaba para proteger a mi familia. El proceso fue rapidísimo.'
+                      : 'Professional, honest and very patient. She explained everything without pressure and I found the policy I needed to protect my family. The process was very fast.'
+                  },
+                  {
+                    name: 'Luisa Pérez',
+                    location: 'Orlando, FL',
+                    service: language==='es' ? 'Seguros Familiares' : 'Family Insurance',
+                    avatar: 'LP',
+                    color: 'bg-purple-500',
+                    text: language==='es'
+                      ? 'Llevaba años sin seguro médico porque no sabía cómo aplicar. Anisley me guió paso a paso y hoy toda mi familia está asegurada. ¡Dios la bendiga!'
+                      : 'I had been without health insurance for years because I didn\'t know how to apply. Anisley guided me step by step and today my whole family is insured!'
+                  },
+                  {
+                    name: 'José Martínez',
+                    location: 'Dallas, TX',
+                    service: language==='es' ? 'Taxes' : 'Taxes',
+                    avatar: 'JM',
+                    color: 'bg-green-600',
+                    text: language==='es'
+                      ? 'Me hizo los taxes de mi negocio y los personales. Muy rápida y eficiente. Gracias a ella recuperé dinero que no sabía que me correspondía. Excelente servicio.'
+                      : 'She did my business and personal taxes. Very fast and efficient. Thanks to her I recovered money I didn\'t know I was owed. Excellent service.'
+                  },
+                  {
+                    name: 'Ana Torres',
+                    location: 'Tampa, FL',
+                    service: language==='es' ? 'Obamacare' : 'Obamacare',
+                    avatar: 'AT',
+                    color: 'bg-amber-500',
+                    text: language==='es'
+                      ? 'Lo mejor es que habla español y te explica todo con calma. Nunca me sentí presionada. Conseguí un plan con medicamentos incluidos y pago muy poco al mes.'
+                      : 'The best part is that she speaks Spanish and explains everything calmly. I never felt pressured. I got a plan with medications included and pay very little per month.'
+                  },
+                  {
+                    name: 'Roberto Díaz',
+                    location: 'San Antonio, TX',
+                    service: language==='es' ? 'Seguros Familiares' : 'Family Insurance',
+                    avatar: 'RD',
+                    color: 'bg-indigo-500',
+                    text: language==='es'
+                      ? 'Contraté seguro para toda mi familia y el proceso fue muy sencillo. Anisley siempre está disponible cuando la necesito. Una agente de verdad comprometida con sus clientes.'
+                      : 'I got insurance for my whole family and the process was very simple. Anisley is always available when I need her. A truly committed agent.'
+                  },
+                ].map((review, i) => (
+                  <div key={i} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-slate-100 flex flex-col gap-4">
+
+                    {/* Estrellas */}
+                    <div className="flex gap-1">
+                      {[1,2,3,4,5].map(s => <StarIcon key={s} className="w-4 h-4 text-amber-400" />)}
+                    </div>
+
+                    {/* Texto */}
+                    <p className="text-slate-600 text-sm leading-relaxed flex-1">"{review.text}"</p>
+
+                    {/* Cliente */}
+                    <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+                      <div className={`w-10 h-10 ${review.color} rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0`}>
+                        {review.avatar}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-slate-900 text-sm">{review.name}</p>
+                        <p className="text-xs text-slate-500">{review.location} · {review.service}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── POR QUÉ ELEGIRME ── */}
+          <section id="why-choose" className="py-20 px-6">
+            <div className="max-w-6xl mx-auto">
+              <div className={`text-center mb-8 transition-all duration-1000 ${vis('why-choose')}`}>
+                <span className="text-amber-500 font-semibold text-sm tracking-widest">{t.whySpan}</span>
+                <h2 className="text-4xl font-serif font-bold text-slate-900 mt-4">
+                  {t.whyTitle}<span className="text-amber-500">{t.whyHighlight}</span>
+                </h2>
+              </div>
+              <p className="text-center text-slate-600 max-w-2xl mx-auto mb-16">{t.whyDesc}</p>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {benefits.map((b, i) => (
+                  <div key={i}
+                    className={`p-8 bg-white border-l-4 border-amber-500 rounded-lg shadow-sm hover:shadow-lg transition-all duration-500 ${vis('why-choose')}`}
+                    style={{ transitionDelay: visibleSections['why-choose'] ? `${i*100}ms` : '0ms' }}
+                  >
+                    <div className="text-4xl mb-4">{b.icon}</div>
+                    <h3 className="text-lg font-bold text-slate-900 mb-3">{b.title}</h3>
+                    <p className="text-slate-600 text-sm leading-relaxed">{b.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── AGENTE ── */}
+          <section id="team" className="py-20 px-6 bg-white">
+            <div className="max-w-6xl mx-auto">
+              <div className={`text-center mb-16 transition-all duration-1000 ${vis('team')}`}>
+                <span className="text-amber-500 font-semibold text-sm tracking-widest">{t.teamSpan}</span>
+                <h2 className="text-4xl font-serif font-bold text-slate-900 mt-4">{t.teamTitle}</h2>
+              </div>
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div className={`transition-all duration-1000 ${vis('team')}`}>
+                  <div
+                    className="rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow cursor-pointer"
+                    onClick={() => { setGalleryIndex(0); setShowGallery(true); }}
+                    title={t.galleryTitle}
+                  >
+                    <img src={profilePhoto} alt="Anisley G Rivero" className="w-full h-auto object-cover" />
+                  </div>
+                  <p className="text-center text-sm text-slate-500 italic mt-3">{t.agentCaption}</p>
+                </div>
+                <div className={`space-y-6 transition-all duration-1000 ${vis('team')}`}
+                  style={{ transitionDelay: visibleSections.team ? '100ms' : '0ms' }}>
+                  <div>
+                    <h3 className="text-3xl font-serif font-bold text-slate-900 mb-2">{t.teamTitle}</h3>
+                    <p className="text-amber-500 font-semibold text-lg mb-4">{t.teamRole}</p>
+                  </div>
+                  <p className="text-lg text-slate-600 leading-relaxed">{t.teamDesc}</p>
+                  <div className="pt-4">
+                    <h4 className="font-semibold text-slate-900 mb-3">{t.teamSpecialties}:</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {[t.teamObamacare, t.teamLife, t.teamFamily].map((sp, i) => (
+                        <span key={i} className="px-4 py-2 bg-amber-100 text-amber-900 rounded-full font-semibold text-sm">{sp}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="pt-6 border-t border-slate-200">
+                    <button onClick={() => setShowContactModal(true)}
+                      className="px-8 py-3 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-all hover:shadow-xl font-semibold inline-flex items-center gap-2">
+                      <PhoneIcon className="w-5 h-5" /> {t.navContact}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── CONTACTO ── */}
+          <section id="contact" className="py-20 px-6 bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+            <div className="max-w-6xl mx-auto">
+              <div className={`grid md:grid-cols-2 gap-12 transition-all duration-1000 ${vis('contact')}`}>
+                {/* Info */}
+                <div className="space-y-8">
+                  <div>
+                    <span className="text-amber-400 font-semibold text-sm tracking-widest">{t.contactSpan}</span>
+                    <h2 className="text-4xl font-serif font-bold mt-4">{t.contactTitle}</h2>
+                  </div>
+                  <p className="text-slate-300 leading-relaxed">{t.contactDesc}</p>
+                  <div className="space-y-6 pt-4">
+                    <a href="tel:+17863931906" className="flex items-start gap-4 group">
+                      <PhoneIcon className="w-6 h-6 text-amber-400 flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="font-semibold text-sm text-amber-400 mb-1">{t.phonLabel}</p>
+                        <p className="text-white text-lg group-hover:text-amber-300 transition-colors">786-393-1906</p>
+                      </div>
+                    </a>
+                    <a href="mailto:anisley.grivero@gmail.com" className="flex items-start gap-4 group">
+                      <MailIcon className="w-6 h-6 text-amber-400 flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="font-semibold text-sm text-amber-400 mb-1">{t.emailLabel}</p>
+                        <p className="text-white text-lg group-hover:text-amber-300 transition-colors">anisley.grivero@gmail.com</p>
+                      </div>
+                    </a>
+                    <div className="flex items-start gap-4">
+                      <MapPinIcon className="w-6 h-6 text-amber-400 flex-shrink-0 mt-1" />
+                      <div>
+                        <p className="font-semibold text-sm text-amber-400 mb-1">{t.areaLabel}</p>
+                        <p className="text-white text-lg">Florida & Texas</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Formulario */}
+                <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl border border-white/20">
+                  <h3 className="text-2xl font-serif font-bold mb-6">{t.formTitle}</h3>
+
+                  {formStatus === 'success' ? (
+                    <div className="flex flex-col items-center justify-center h-64 text-center space-y-4">
+                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center">
+                        <CheckIcon className="w-8 h-8 text-white" />
+                      </div>
+                      <p className="text-lg font-semibold text-green-300">{t.formSuccess}</p>
+                      <button onClick={() => setFormStatus('idle')} className="text-slate-300 hover:text-white underline text-sm">
+                        {language==='es' ? 'Enviar otro mensaje' : 'Send another message'}
+                      </button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">{t.formName} *</label>
+                        <input name="name" type="text" required value={formData.name} onChange={handleFormChange}
+                          placeholder={t.formNamePlaceholder}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">{t.formPhone} *</label>
+                        <input name="phone" type="tel" required value={formData.phone} onChange={handleFormChange}
+                          placeholder={t.formPhonePlaceholder}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">{t.formEmail}</label>
+                        <input name="email" type="email" value={formData.email} onChange={handleFormChange}
+                          placeholder={t.formEmailPlaceholder}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">{t.formType}</label>
+                        <select name="type" value={formData.type} onChange={handleFormChange}
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-400">
+                          <option value="" className="text-slate-900">{t.formSelect}</option>
+                          <option value="Seguro de Vida / Life Insurance" className="text-slate-900">{t.formVida}</option>
+                          <option value="Obamacare" className="text-slate-900">{t.formMedico}</option>
+                          <option value="Seguros Familiares / Family Insurance" className="text-slate-900">{t.formFamiliar}</option>
+                          <option value="Taxes Personales y Corporativos / Personal & Corporate Taxes" className="text-slate-900">{t.service5Title}</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold mb-2">{t.formMessage}</label>
+                        <textarea name="message" value={formData.message} onChange={handleFormChange}
+                          placeholder={t.formMessagePlaceholder} rows="3"
+                          className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none" />
+                      </div>
+                      {formStatus === 'error' && (
+                        <p className="text-red-400 text-sm">{t.formError}</p>
+                      )}
+                      <button type="submit" disabled={formStatus==='sending'}
+                        className="w-full py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-700 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-xl flex items-center justify-center gap-2">
+                        {formStatus==='sending' ? (
+                          <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block"></span> {t.formSending}</>
+                        ) : t.formSubmit}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── FOOTER ── */}
+          <footer className="bg-slate-950 text-slate-400 py-8 px-6 text-center text-sm">
+            <div className="max-w-6xl mx-auto">
+              <p className="font-serif text-white text-lg mb-1">{t.footerCompany}</p>
+              <p>{t.footerRole}</p>
+              <p className="mt-4">{t.footerDisclaimer}</p>
+            </div>
+          </footer>
+
+          {/* ── MODAL GALERÍA DE FOTOS ── */}
+          {showGallery && (
+            <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
+              onClick={() => setShowGallery(false)}>
+              <div className="relative max-w-2xl w-full" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-white text-xl font-serif font-bold">{t.galleryTitle}</h2>
+                  <button onClick={() => setShowGallery(false)}
+                    className="text-white hover:text-amber-400 transition-colors p-2">
+                    <XIcon className="w-6 h-6" />
+                  </button>
+                </div>
+                <div className="rounded-2xl overflow-hidden shadow-2xl">
+                  <img
+                    src={agentPhotos[galleryIndex].src}
+                    alt={agentPhotos[galleryIndex].alt}
+                    className="w-full h-auto max-h-[75vh] object-contain bg-slate-900"
+                  />
+                </div>
+                {agentPhotos.length > 1 && (
+                  <div className="flex justify-center gap-3 mt-4">
+                    {agentPhotos.map((_, i) => (
+                      <button key={i} onClick={() => setGalleryIndex(i)}
+                        className={`w-3 h-3 rounded-full transition-colors ${i===galleryIndex ? 'bg-amber-500' : 'bg-white/40 hover:bg-white/70'}`} />
+                    ))}
+                  </div>
+                )}
+                <p className="text-center text-slate-400 text-sm mt-3">{t.agentCaption}</p>
+              </div>
+            </div>
+          )}
+
+          {/* ── MODAL CONTACTO ── */}
+          {showContactModal && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-fadeInUp">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-serif font-bold text-slate-900 mb-2">{t.contactModalTitle}</h2>
+                  <div className="w-12 h-1 bg-amber-500 mx-auto rounded"></div>
+                </div>
+                <div className="space-y-4">
+                  <a href="mailto:anisley.grivero@gmail.com"
+                    className="flex items-center gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-amber-500 hover:bg-amber-50 transition-all duration-300 group">
+                    <MailIcon className="w-8 h-8 text-amber-500 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-semibold text-slate-900 group-hover:text-amber-600">{t.contactModalEmail}</p>
+                      <p className="text-sm text-slate-600">anisley.grivero@gmail.com</p>
+                    </div>
+                    <ArrowRightIcon className="w-5 h-5 text-amber-500 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                  <a href="tel:+17863931906"
+                    className="flex items-center gap-4 p-5 rounded-xl border-2 border-slate-200 hover:border-amber-500 hover:bg-amber-50 transition-all duration-300 group">
+                    <PhoneIcon className="w-8 h-8 text-amber-500 flex-shrink-0" />
+                    <div className="flex-1">
+                      <p className="font-semibold text-slate-900 group-hover:text-amber-600">{t.contactModalPhone}</p>
+                      <p className="text-sm text-slate-600">786-393-1906</p>
+                    </div>
+                    <ArrowRightIcon className="w-5 h-5 text-amber-500 group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </div>
+                <button onClick={() => setShowContactModal(false)}
+                  className="w-full mt-8 py-3 text-slate-600 hover:text-slate-900 font-semibold transition-colors">
+                  {t.contactModalClose}
+                </button>
+              </div>
+            </div>
+          )}
+
+        </div>
+      );
+    }
+
+    // Montar la app
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<SeguroVital />);
+  </script>
+</body>
+</html>
